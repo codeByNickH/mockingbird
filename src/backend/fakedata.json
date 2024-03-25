@@ -1,0 +1,96 @@
+{
+    "users": [
+      {
+        "id": "987654321",
+        "name": "John Doe",
+        "screen_name": "johndoe",
+        "image": "/placeholder-user.jpg",
+        "location": "Earth",
+        "followers_count": 1500,
+        "friends_count": 500,
+        "tweets": [
+          {
+            "tweet_id": "12345678901",
+            "content": "Life's a roller coaster, but sometimes\nit feels like the ride operator is a blind chimp\nwith an encyclopedia of Freudian psychoanalysis.\nHang tight, folks!",
+            "added_image": "/placeholder.svg",
+            "timestamp": "2024-03-20T12:00:00Z",
+            "metadata": {
+              "retweet_count": 10,
+              "favorite_count": 20,
+              "hashtags": ["#existentialcomedy", "#monkeybusiness"],
+              "mentions": []
+            }
+          },
+          {
+            "tweet_id": "12345678902",
+            "content": "Exploring Twitter API!",
+            "timestamp": "2024-03-21T15:00:00Z",
+            "metadata": {
+              "retweet_count": 5,
+              "favorite_count": 15,
+              "hashtags": ["#TwitterAPI"],
+              "mentions": ["@TwitterDev"]
+            }
+          },
+          {
+            "tweet_id": "12345678903",
+            "content": "Happy to be part of this community.\nText in a pre element is displayed in a fixed-widthfont\nand it preserves both spaces and line breaks",
+            "timestamp": "2024-03-22T18:00:00Z",
+            "metadata": {
+              "retweet_count": 20,
+            "favorite_count": 40,
+              "hashtags": ["#community", "#happy"],
+              "mentions": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "987654322",
+        "name": "Jane Doe",
+        "screen_name": "janedoe",
+        "image": "/testpic.webp",
+        "location": "Mars",
+        "followers_count": 2000,
+        "friends_count": 600,
+        "tweets": [
+          {
+            "tweet_id": "22345678901",
+            "content": "It's a great day on Mars!",
+            "added_image": "/testpic.webp",
+            "timestamp": "2024-03-20T14:00:00Z",
+            "metadata": {
+              "retweet_count": 30,
+              "favorite_count": 50,
+              "hashtags": ["#Mars", "#Space"],
+              "mentions": []
+            }
+          },
+          {
+            "tweet_id": "22345678902",
+            "content": "Exploring the red planet with @elonmusk.",
+            "added_image": "/placeholder.svg",
+            "timestamp": "2024-03-21T16:00:00Z",
+            "metadata": {
+              "retweet_count": 25,
+              "favorite_count": 45,
+              "hashtags": ["#RedPlanet", "#Exploration"],
+              "mentions": []
+            }
+          },
+          {
+            "tweet_id": "22345678903",
+            "content": "Can't wait to share more about my journey!",
+            "timestamp": "2024-03-22T20:00:00Z",
+            "metadata": {
+              "retweet_count": 40,
+              "favorite_count": 60,
+              "hashtags": ["#Journey", "#SpaceTravel"],
+              "mentions": []
+            }
+          }
+        ]
+      }
+    ]
+  }
+  
