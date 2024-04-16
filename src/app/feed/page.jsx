@@ -4,8 +4,6 @@ import { FeedComponent } from '@/components/component/feed-component'
 
 export default function Feed() {
   return (
-    <div>
       <FeedComponent /> 
-    </div>
   )
 }

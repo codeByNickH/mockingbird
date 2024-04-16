@@ -1,9 +1,8 @@
-import { database } from '@/lib/firebase';
-import { ref, push } from 'firebase/database';
+const { database } = require('@/lib/firebase');
+const { ref, push } = require('firebase/database');
 
 export function addUser(newChar) {
     const userRef = ref(database, 'users');
-    console.log.apply(newChar)
     const newUser = {
         avatar: newChar[0],
         full_name: newChar[1],

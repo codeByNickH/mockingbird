@@ -1,35 +1,30 @@
-const { ref, onValue, where, orderByChild, query, limitToLast } = require('firebase/database');
-const { database } = require("../lib/firebase");
-const { orderByValue } = require("firebase/database");
+const { ref, onValue, query, limitToLast } = require('firebase/database');
+const { database } = require("./firebase");
 const { fetchUsers } = require("./fetchUser");
 
 async function fetchTweetsAndUserData() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         let theseTweets;
         let theseRetweets;
         const tweetsRef = ref(database, 'tweets');
         onValue(tweetsRef, async (snapshot) => {
             const tweets = await snapshot.val();
-
             if (tweets != null) {
                 const usersRef = ref(database, 'users');
                 onValue(usersRef, async (snapshot) => {
                     const users = await snapshot.val();
-
                     const retweetsRef = ref(database, 'retweets');
                     onValue(retweetsRef, async (snapshot) => {
                         const retweets = await snapshot.val();
-
                         const tweet = Object.keys(tweets).map((key) => {
                             const tweetData = tweets[key];
                             const user = users[tweetData.userId];
                             const Id = key;
-
                             const retweet = Object.keys(retweets).map((rtkey) => {
                                 const retweetData = retweets[rtkey];
-                                const ogTweet = tweets[retweetData?.ogTweetId];
-                                const ogUser = users[retweetData?.ogUserId];
-                                const user = users[retweetData?.userId];
+                                const ogTweet = tweets[retweetData.ogTweetId];
+                                const ogUser = users[retweetData.ogUserId];
+                                const user = users[retweetData.userId];
                                 const Id = rtkey;
                                 return {
                                     ...retweetData,
@@ -45,28 +40,26 @@ async function fetchTweetsAndUserData() {
                                 user,
                                 Id
                             };
-                        })
+                        });
                         theseTweets = tweet
                         const merged = [...theseTweets, ...theseRetweets]
-                        console.log(merged)
-                        merged.sort((a, b) => a.createdAt.localeCompare(b.createdAt)).reverse()
-                        resolve(merged)
-                    })
+                        console.log(merged);
+                        merged.sort((a, b) => a.createdAt.localeCompare(b.createdAt)).reverse();
+                        resolve(merged);
+                    });
                 }, (error) => reject(error));
             }
         }, (error) => reject(error));
-    }, (error) => reject(error));
-};
+    });
+}
 
 
 const fetchRandomTweet = async () => { // Add random nr to make if less then.. take from retweets.
-    return new Promise(async (resolve, reject) => {
-        const tweetsRef = query(ref(database, 'tweets'), limitToLast(10))
-
+    return new Promise((resolve, reject) => {
+        const tweetsRef = query(ref(database, 'tweets'), limitToLast(20));
         onValue(tweetsRef, (snapshot) => {
-            const tweets = snapshot.val()
+            const tweets = snapshot.val();
             const nrOfTweets = tweets ? Object.keys(tweets).length : 0;
-
             if (nrOfTweets > 0) {
                 const tweetIds = Object.keys(tweets);
                 const min = Math.ceil(0);
@@ -74,16 +67,14 @@ const fetchRandomTweet = async () => { // Add random nr to make if less then.. t
                 const randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
                 const randomTweetId = tweetIds[randomIndex];
                 const tweet = [randomTweetId, tweets[randomTweetId]];
-
-                resolve(tweet)
+                resolve(tweet);
             }
-
         }, (error) => reject(error));
     });
 }
 
 const fetchTweetById = async (tweetId) => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const tweetsRef = ref(database, 'tweets/' + tweetId)
         let tweet;
         onValue(tweetsRef, (snapshot) => {
@@ -106,7 +97,7 @@ const fetchTweetById = async (tweetId) => {
 }
 
 const fetchTweetAndAnswerById = async (tweetId) => {  // Needs a rebuild, gets alot of unnecessary data.
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const tweetRef = ref(database, 'tweets/' + tweetId)
         let ogUser;
         let tweet;
@@ -122,7 +113,7 @@ const fetchTweetAndAnswerById = async (tweetId) => {  // Needs a rebuild, gets a
                     onValue(ogUsersRef, async (snapshot) => {
                         ogUser = await snapshot.val()
 
-                        const usersRef = ref(database, 'users/' + tweet?.userId);
+                        const usersRef = ref(database, 'users/' + tweet.userId);
                         onValue(usersRef, async (snapshot) => {
                             const user = await snapshot.val();
                             const tweetWithId = { tweetId, ...tweet }

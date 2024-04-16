@@ -1,5 +1,5 @@
 const axios = require("axios");
-const subjects = require('../backend/subjects.json')
+const subjects = require('./subjects.json')
 
 const key = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -30,8 +30,8 @@ function getRandomInt() {
     let max = Math.floor(19);
     return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
+    
 const openaiApiCall = async (prompt, avatar)=>{
-    console.log(avatar)
     const i = getRandomInt();
     const subjectExample = subjects.tweet_subjects[i].subject;
     const subjectDescription = subjects.tweet_subjects[i].description;
@@ -71,7 +71,7 @@ const openaiApiCall = async (prompt, avatar)=>{
                 content: `${prompt}`
             }]
         });
-        return Promise.resolve({success: true, data: res.data?.choices[0]?.message?.content});
+        return Promise.resolve({success: true, data: res.data.choices[0].message.content});
 
     }catch(err) {
         console.log('error: ',err);

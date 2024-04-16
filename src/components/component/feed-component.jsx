@@ -1,132 +1,260 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton"
 import { useEffect, useState } from "react";
 import { Separator } from "../ui/separator";
 import { ref, onValue, query, orderByChild } from "firebase/database";
 import { database } from '@/lib/firebase';
 import { InputTweetComponent } from "./input-tweet-component";
+import { addLike, addTweet, addRetweet, addTweetAnswer } from '@/backend/addTweet'
+import { fetchRandomTweet, fetchRetweetById, fetchTweetById, fetchTweetsAndUserData } from '@/backend/fetchTweets'
+import { fetchRandomUser, fetchUserById } from "@/backend/fetchUser";
+import { generateTweet } from "@/backend/generateTweet";
+import Link from "next/link";
+import { CardContent, Card, CardFooter } from "@/components/ui/card"
+
 
 
 export function FeedComponent() {
-  const [data, setData] = useState(null);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isRetweeted, setIsRetweeted] = useState(false);
-  
-  useEffect(()  => {
-    // async function GetTweets() {
-    //   const tweets = await fetchTweetsAndUserData();
-    //   setData(tweets)
-    // }
-    // GetTweets()
-    async function fetchTweetsAndUserData() {
-      const tweetsRef = query(ref(database, 'tweets'), orderByChild('createdAt'));
-      
-      onValue(tweetsRef, (snapshot) => {
-        const tweets = snapshot.val();
-        
-        const usersRef = ref(database, 'users');
-        onValue(usersRef, (snapshot) => {
-          const users = snapshot.val();
-    
-          const combinedData = Object.keys(tweets).map((key) => {
-            const tweet = tweets[key];
-            const user = users[tweet.userId];
-            return {
-              ...tweet,
-              user
-            };
-          });
-          combinedData.reverse()
-          setData(combinedData)
-        });
-      });
+  const [feedData, setFeedData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLiking, setIsLiking] = useState(false);
+  const [isRetweeting, setIsRetweeting] = useState(false);
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [isTweeting, setIsTweeting] = useState(false);
+
+  useEffect(() => {
+    async function GetTweets() {
+      const tweets = await fetchTweetsAndUserData();
+      setFeedData(tweets)
+      setIsLoading(false)
+      console.log(tweets)
     }
-    fetchTweetsAndUserData();
-  },[])
-  
-  const HandleComment = () => {
+    GetTweets()
+  }, [isLiking, isRetweeting, isCommenting, isTweeting]);
+
+  const HandleTweet = async () => {
+    setIsTweeting(true)
     
+    const user = await fetchRandomUser();
+    console.log(user);
+    
+    const avatar = [user[1].gpt_interest, user[1].gpt_personality];
+    const tweet = await generateTweet(" ", avatar);
+    await addTweet(user[0], tweet);
+    setIsTweeting(false);
   }
 
-  const HandleRetweet = () => {
-    setIsRetweeted(!isRetweeted)
-  }
-  
-  const HandleLike = () => {
-    setIsLiked(!isLiked)
+  const HandleComment = async (id) => {
+    setIsCommenting(true)
+    let user = await fetchRandomUser();
+    let ogTweet = await fetchTweetById(id);
+
+    if (ogTweet[1].userId === user[0]) {
+      user = await fetchRandomUser();
+    }
+    const avatar = [user[1].gpt_interest, user[1].gpt_personality];
+
+    const ogTweetUser = await fetchUserById(ogTweet[1].userId);
+    const tweetAnswer = await generateTweet(`From input message: ${ogTweet[1].content} by user: ${ogTweetUser.username} In less than 280 characters, write a Twitter a short response to ${ogTweetUser.username}.`, avatar);
+    console.log(tweetAnswer)
+    await addTweetAnswer(ogTweet, tweetAnswer, user[0]);
+    setIsCommenting(!true)
   }
 
-  if(!data){
-    return <h2 className="flex flex-col items-center p-10">Loading...</h2>
+  const HandleRetweet = async (id) => {
+    setIsRetweeting(true)
+    let user = await fetchRandomUser();
+    let tweet = await fetchTweetById(id);
+
+    if (tweet[1].userId === user[0]) {
+      user = await fetchRandomUser();
+    }
+    const avatar = [user[1].gpt_interest, user[1].gpt_personality];
+
+    const ogTweetUser = await fetchUserById(tweet[1].userId);
+    const retweetContent = await generateTweet(`From input message: ${tweet[1].content} by user: ${ogTweetUser.username} In less than 280 characters, write a Twitter response as if you are retweeting this from ${ogTweetUser.username}. If you mention the user, use this format: @${ogTweetUser.username}. Don't mention retweet, retweeting or anything like that.`, avatar);
+    await addRetweet(tweet, retweetContent, user[0]);
+    setIsRetweeting(false)
+  }
+
+  const HandleLike = async (id) => {
+    setIsLiking(true)
+    let tweet = await fetchTweetById(id);
+    await addLike(tweet);
+    setIsLiking(false)
   }
 
   return (
     <div>
-      <InputTweetComponent/>
-      <main className="flex flex-col min-h-screen items-center justify-between ">
-        <section className="flex flex-col border-x border-gray-800 items-center px-4 sm:px-6">
-          {data?.map((key, id) =>
-            <div key={id} className="flex items-start flex-col">
-               <div >
-                <div className="flex items-start space-x-2 p-2 m-2">
-                  <img
-                    alt="Avatar"
-                    className="rounded-full"
-                    height="64"
-                    src={key?.user?.avatar}
-                    style={{
-                      aspectRatio: "64/64",
-                      objectFit: "cover",
-                    }}
-                    width="64"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      <h1 className="font-bold text-xl">{key?.user?.full_name}</h1>
-                      <p className="text-gray-500">@{key?.user?.username}</p>
-                    </div>
-                    <p className="text-gray-500 line-clamp-7 mb-3 ms-1 dark:text-white whitespace-pre-wrap w-96">
-                      {key?.content}<br/>
-                      {/* {key.metadata.mentions}<br/>{key.metadata.hashtags} */}
-                    </p>
-                    {key.added_image != null &&
-                      <img
-                      alt="Image"
-                      className="aspect-video overflow-hidden rounded-xl object-cover object-center"
-                      height={250}
-                      src={key?.added_image}
-                      width={384}
-                      />
-                    }
-                    <div className="flex items-center gap-1 mt-1">
-                      <Button onClick={HandleComment} variant={"link"}><MessageSquareIcon className="w-6 h-6" /></Button>
-                      <Button onClick={HandleRetweet} variant={"link"}><RetweetIcon isRetweeted={isRetweeted} className="w-6 h-6" /></Button>
-                      <Button onClick={HandleLike} variant={"link"}><HeartIcon isLiked={key?.metadata?.liked_by?.userId.includes("u123456")} className="w-6 h-6" /></Button>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{key?.metadata?.favorite_count}</span>
-                    </div>
-                  </div>
-                </div>
-                <Separator />
+      {isLoading ? (
+        <main className="flex flex-col min-h-screen items-center justify-between pt-32">
+          <section className="flex flex-col items-center px-4 sm:px-6">
+            <div className="flex items-start space-x-2 p-2 m-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[150px]" />
+                <Skeleton className="h-40 w-[350px]" />
+                <Skeleton className="h-4 w-[200px] ms-2" />
               </div>
             </div>
-          )}
-        </section>
-      </main>
+            <div className="flex items-start space-x-2 p-2 m-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[150px]" />
+                <Skeleton className="h-40 w-[350px]" />
+                <Skeleton className="h-4 w-[200px] ms-2" />
+              </div>
+            </div>
+            <div className="flex items-start space-x-2 p-2 m-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[150px]" />
+                <Skeleton className="h-40 w-[350px]" />
+                <Skeleton className="h-4 w-[200px] ms-2" />
+              </div>
+            </div>
+            <div className="flex items-start space-x-2 p-2 m-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[150px]" />
+                <Skeleton className="h-40 w-[350px]" />
+                <Skeleton className="h-4 w-[200px] ms-2" />
+              </div>
+            </div>
+            <div className="flex items-start space-x-2 p-2 pb-10 m-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[150px]" />
+                <Skeleton className="h-40 w-[350px]" />
+                <Skeleton className="h-4 w-[200px] ms-2" />
+              </div>
+            </div>
+          </section>
+        </main>
+      ) : (
+        <div>
+          {/* <InputTweetComponent /> */}
+          <Card>
+      <CardContent className="flex flex-col items-center p-6">
+        {/* <div className="grid w-full max-w-sm gap-2">
+          <Textarea className="h-[96px] text-base font-bold"
+            placeholder="What's happening?"
+            onInput={(e) => setMessage(e.target.value)}
+          />
+          <div className="flex items-center space-x-2 text-sm">
+            <span className="font-bold">{chars}</span>
+            <span className="text-gray-500 dark:text-gray-400">Characters remaining</span>
+          </div>
+        </div> */}
+        <CardFooter className="flex p-4 items-center space-x-52">
+          {/* <Button onClick={HandleImage} disabled={isloading} size="sm">
+            <ImageIcon className="w-4 h-4 mr-1 -translate-y-0.5" />
+            Add image
+          </Button> */}
+          <Button onClick={HandleTweet} disabled={isTweeting} className="ml-auto" size="sm">
+            Tweet
+          </Button>
+        </CardFooter>
+      </CardContent>
+    </Card>
+          <main className="flex flex-col min-h-screen items-center">
+            <section className="flex flex-col border-x border-y rounded border-gray-800 items-center px-6 mb-3 pb-6">
+              {feedData?.map((key, id) =>
+                <div key={id}>
+                    <div className="flex items-start space-x-2 p-2 m-2">
+                      <img
+                        alt="Avatar"
+                        className="rounded-full"
+                        height="64"
+                        src={key?.user?.avatar}
+                        style={{
+                          aspectRatio: "64/64",
+                          objectFit: "cover",
+                        }}
+                        width="64"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h1 className="font-bold text-xl">{key?.user?.full_name}</h1>
+                          <p className="text-gray-500">@{key?.user?.username}</p>
+                        </div>
+                        {key?.ogContent != null &&
+                          <Link href={'/feed/' + key?.Id}>
+                            <p className="text-gray-500 line-clamp-7 mb-3 ms-1 dark:text-white whitespace-pre-wrap sm:w-fit md:w-96">
+                              {key?.content}<br />
+                            </p>
+                          </Link>
+                        }
+                        {key?.ogContent == null &&
+                          <Link href={'/feed/' + key?.Id}>
+                            <p className="text-gray-500 line-clamp-7 mb-3 ms-1 dark:text-white whitespace-pre-wrap sm:w-fit md:w-96">
+                              {key?.content}<br />
+                            </p>
+                          </Link>
+                        }
+                        {key?.ogContent != null &&
+                          <div className="flex border rounded-md border-gray-800 items-start space-x-1 p-1 m-1">
+                            <img
+                              alt="Avatar"
+                              className="rounded-full"
+                              height="32"
+                              src={key?.ogUser?.avatar}
+                              style={{
+                                aspectRatio: "32/32",
+                                objectFit: "cover",
+                              }}
+                              width="32"
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2">
+                                <h1 className="font-bold text-sm">{key?.ogUser?.full_name}</h1>
+                                <p className="text-gray-500 text-sm">@{key?.ogUser?.username}</p>
+                              </div>
+                              <Link href={'/feed/' + key?.ogTweetId}>
+                                <p className="text-gray-500 line-clamp-3 mb-3 ms-1 text-sm dark:text-white whitespace-pre-wrap sm:w-fit md:w-72">
+                                  {key?.ogContent}<br />
+                                </p>
+                              </Link>
+                            </div>
+                          </div>
+                        }
+                        <div className="flex justify-end text-gray-400 text-xs text-muted-foreground">{key?.createdAt}</div>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Button className=" space-x-2" onClick={() => { HandleComment(key.Id) }} disabled={isCommenting} variant={"link"}><MessageSquareIcon props={key?.metadata?.answer_count > 0} className="w-6 h-6" />
+                            <span className="text-sm text-gray-500 dark:text-gray-400">{key?.metadata?.answer_count}</span>
+                          </Button>
+                          <Button className=" space-x-2" onClick={() => { HandleRetweet(key.Id) }} disabled={isRetweeting} variant={"link"}><RetweetIcon props={key?.metadata?.retweet_count > 0} className="w-6 h-6" />
+                            <span className="text-sm text-gray-500 dark:text-gray-400">{key?.metadata?.retweet_count}</span>
+                          </Button>
+                          <Button className=" space-x-2" onClick={() => { HandleLike(key.Id) }} disabled={isLiking} variant={"link"}><HeartIcon props={key?.metadata?.favorite_count > 0} className=" w-6 h-6" />
+                            <span className="text-sm text-gray-500 dark:text-gray-400">{key?.metadata?.favorite_count}</span>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  <Separator />
+                </div>
+              )}
+            </section>
+          </main>
+        </div>
+      )}
     </div>
   )
 }
 
 
-function HeartIcon(isLiked) {
+function HeartIcon(props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      fill={isLiked.isLiked ? 'red' : 'none'}
-      stroke={isLiked.isLiked ? 'red' : 'currentColor'}
+      fill={'none'}
+      stroke={props.props ? 'red' : 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -136,39 +264,15 @@ function HeartIcon(isLiked) {
   )
 }
 
-
-function UploadIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="17 8 12 3 7 8" />
-      <line x1="12" x2="12" y1="3" y2="15" />
-    </svg>
-  )
-}
-
-
 function MessageSquareIcon(props) {
   return (
     <svg
-      {...props}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
+      fill='none'
+      stroke={props.props ? 'blue' : 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -178,37 +282,15 @@ function MessageSquareIcon(props) {
   )
 }
 
-
-function ArrowUpCircleIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="m16 12-4-4-4 4" />
-      <path d="M12 16V8" />
-    </svg>
-  )
-}
-
-function RetweetIcon(isRetweeted) {
+function RetweetIcon(props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
       viewBox="0 0 576 512"
-      fill={isRetweeted.isRetweeted ? 'green' : '#fafafa'}
-      stroke={isRetweeted.isRetweeted ? 'red' : 'currentColor'}
+      fill={props.props ? 'green' : '#fafafa'}
+      stroke={props.props ? 'green' : 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
