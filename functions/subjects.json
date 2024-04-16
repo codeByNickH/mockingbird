@@ -1,0 +1,209 @@
+{
+    "tweet_subjects": [
+      {
+        "subject": "Current Events",
+        "description": "Share your take on the latest news stories, ensuring to stay informed and disrespectful."
+      },
+      {
+        "subject": "Tech Innovations",
+        "description": "Talk about the latest gadgets, apps, or tech trends impacting daily life or your industry."
+      },
+      {
+        "subject": "Sustainability Tips",
+        "description": "Offer advice on living more sustainably, whether it's through recycling, reducing energy consumption, or supporting eco-friendly brands."
+      },
+      {
+        "subject": "Mental Health Awareness",
+        "description": "Share tips for maintaining mental health, personal stories, or supportive messages to help destigmatize mental health issues."
+      },
+      {
+        "subject": "Travel Experiences",
+        "description": "Post about your latest travel adventure, hidden gems you've discovered, or travel tips for various destinations."
+      },
+      {
+        "subject": "Book Recommendations",
+        "description": "Share books you've recently read and loved, along with a brief reason why others should check them out."
+      },
+      {
+        "subject": "Work-Life Balance",
+        "description": "Offer insights or ask your followers how they manage work-life balance, sharing tips that have worked for you."
+      },
+      {
+        "subject": "Fitness Challenges",
+        "description": "Talk about your fitness journey, challenges you're undertaking, or motivational tips for those looking to stay active."
+      },
+      {
+        "subject": "Creative Projects",
+        "description": "Showcase your latest projects or works in progress, whether it's art, music, writing, or another creative endeavor."
+      },
+      {
+        "subject": "Cultural Insights",
+        "description": "Share experiences or learnings about different cultures, whether from your own heritage or cultures you've experienced through travel or study."
+      },
+      {
+        "subject": "Personal Growth",
+        "description": "Discuss your journey towards personal improvement, including goals, milestones, and the lessons you've learned."
+      },
+      {
+        "subject": "Food and Recipes",
+        "description": "Share your favorite recipes, cooking tips, or the best meals you've had at restaurants."
+      },
+      {
+        "subject": "Science and Space",
+        "description": "Discuss the latest developments in science and space exploration, sharing fascinating facts or recent discoveries."
+      },
+      {
+        "subject": "Pet and Animal Content",
+        "description": "Share adorable or funny moments with your pets or wildlife encounters, a universally loved subject."
+      },
+      {
+        "subject": "DIY Projects",
+        "description": "Offer step-by-step guides or ideas for DIY projects around the home, from simple crafts to home renovation tips."
+      },
+      {
+        "subject": "Entrepreneurship and Startups",
+        "description": "Share insights, challenges, and successes related to starting and running a business."
+      },
+      {
+        "subject": "Health and Wellness",
+        "description": "Offer tips on staying healthy, whether it's through diet, exercise, or wellness practices."
+      },
+      {
+        "subject": "Fashion Trends",
+        "description": "Share your take on the latest fashion trends, outfit ideas, or sustainable fashion brands to watch."
+      },
+      {
+        "subject": "Tech Tutorials",
+        "description": "Provide helpful tutorials or tips related to using technology, software, or apps more effectively."
+      },
+      {
+        "subject": "Humor and Memes",
+        "description": "Lighten the mood by sharing funny observations, jokes, or memes that resonate with your audience."
+      }
+    ],
+    "tweet_emotions": [
+        {
+            "emotion": "Nostalgic"
+        },
+        {
+            "emotion": "Frustration"
+        },
+        {
+            "emotion": "Jealous"
+        },
+        {
+            "emotion": "Excited"
+        },
+        {
+            "emotion": "Sad"
+        },
+        {
+            "emotion": "Disgusted"
+        },
+        {
+            "emotion": "Fear"
+        },
+        {
+            "emotion": "Fear, Guilty"
+        },
+        {
+            "emotion": "Inspired"
+        },
+        {
+            "emotion": "Overwhelmed"
+        },
+        {
+            "emotion": "Bored"
+        },
+        {
+            "emotion": "Amused"
+        },
+        {
+            "emotion": "Hopeless"
+        },
+        {
+            "emotion": "Doubtful"
+        },
+        {
+            "emotion": "Envious"
+        },
+        {
+            "emotion": "Optimistic"
+        },
+        {
+            "emotion": "Irritated"
+        },
+        {
+            "emotion": "Stressed"
+        },
+        {
+            "emotion": "Energetic"
+        },
+        {
+            "emotion": "Enthusiastic"
+        }
+    ],
+    "tweet_audience": [
+        {
+          "audience": "Tech Enthusiasts"
+        },
+        {
+          "audience": "Gardening Aficionados"
+        },
+        {
+          "audience": "Startup Founders"
+        },
+        {
+          "audience": "DIY Crafters"
+        },
+        {
+          "audience": "Foodies"
+        },
+        {
+          "audience": "Travel Buffs"
+        },
+        {
+          "audience": "Fitness Enthusiasts"
+        },
+        {
+          "audience": "Data Scientists"
+        },
+        {
+          "audience": "Book Lovers"
+        },
+        {
+          "audience": "Parenting and Family"
+        },
+        {
+          "audience": "Fashion Followers"
+        },
+        {
+          "audience": "Home Decor Admirers"
+        },
+        {
+          "audience": "Movie Buffs"
+        },
+        {
+          "audience": "Comedy Fans"
+        },
+        {
+          "audience": "Sports Fans"
+        },
+        {
+          "audience": "Blockchain Enthusiasts"
+        },
+        {
+          "audience": "Artificial Intelligence Researchers"
+        },
+        {
+          "audience": "Car Enthusiasts"
+        },
+        {
+          "audience": "Education Tech Specialists"
+        },
+        {
+          "audience": "Cybersecurity Experts"
+        }
+    ]
+  }
+  
