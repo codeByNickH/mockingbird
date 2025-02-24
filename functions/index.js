@@ -9,7 +9,6 @@ exports.onAddedUser = functions.region("europe-west1").database.ref("/users/{use
     const newUserId = context.params.userId;
     const newUser = snapshot.val();
     const avatar = [newUser.gpt_interest, newUser.gpt_personality];
-    console.log(avatar);
     const tweet = await generateTweet(" ", avatar);
     await addTweet(newUserId, tweet);
   });

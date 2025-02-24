@@ -1,5 +1,6 @@
 const { initializeApp } = require("firebase/app");
 const { getDatabase } = require("firebase/database");
+const { getAuth, GoogleAuthProvider } = require("firebase/auth");
 
 const key = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
@@ -14,8 +15,9 @@ const firebaseConfig = {
     measurementId: "G-MQ2R0JF4DE"
 };
 
-
 const app = initializeApp(firebaseConfig);
-export const database = getDatabase(app);
+const database = getDatabase(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// module.exports = { database };
+module.exports = { database, auth, provider };

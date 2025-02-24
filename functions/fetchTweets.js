@@ -43,7 +43,6 @@ async function fetchTweetsAndUserData() {
                         });
                         theseTweets = tweet
                         const merged = [...theseTweets, ...theseRetweets]
-                        console.log(merged);
                         merged.sort((a, b) => a.createdAt.localeCompare(b.createdAt)).reverse();
                         resolve(merged);
                     });
@@ -136,13 +135,11 @@ const fetchTweetAndAnswerById = async (tweetId) => {  // Needs a rebuild, gets a
                                     })
                                     answer.reverse()
                                     const merged = [{ ...tweetWithId, ...user, answer, ogUser }]
-                                    console.log(merged)
                                     resolve(merged)
                                 })
                             } else {
 
                                 const merged = [{ ...tweetWithId, ...user, ogUser }]
-                                console.log(merged)
                                 resolve(merged)
                             }
                         }, (error) => reject(error))
@@ -153,7 +150,6 @@ const fetchTweetAndAnswerById = async (tweetId) => {  // Needs a rebuild, gets a
                 onValue(usersRef, async (snapshot) => {
                     const user = await snapshot.val();
                     const tweetWithId = { tweetId, ...tweet }
-                    console.log(tweetWithId, 'tweetWithId')
                     if (tweet?.metadata?.answer_count > 0) {
                         const users = await fetchUsers();
                         const answerRef = query(ref(database, 'answers'))
@@ -172,13 +168,10 @@ const fetchTweetAndAnswerById = async (tweetId) => {  // Needs a rebuild, gets a
                             })
                             answer.reverse()
                             const merged = [{ ...tweetWithId, ...user, answer }]
-                            console.log(merged)
                             resolve(merged)
                         }, (error) => reject(error))
                     } else {
-
                         const merged = [{ ...tweetWithId, ...user }]
-                        console.log(merged)
                         resolve(merged)
                     }
                 }, (error) => reject(error))

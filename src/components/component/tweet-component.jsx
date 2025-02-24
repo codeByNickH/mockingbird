@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { fetchRandomUser, fetchUserById } from "@/backend/fetchUser"
 import { generateTweet } from "@/backend/generateTweet"
 import { addLike, addRetweet, addTweetAnswer } from "@/backend/addTweet"
+import Image from "next/image"
 
 export function TweetComponent({ params }) {
     const [data, setData] = useState([])
@@ -17,13 +18,11 @@ export function TweetComponent({ params }) {
     const [isRetweeting, setIsRetweeting] = useState(false);
     const [isCommenting, setIsCommenting] = useState(false);
 
-    console.log(params)
     useEffect(() => {
         const fetchTweetAnswers = async () => {
             const tweet = await fetchTweetAndAnswerById(params.tweetId)
             setData(tweet)
             setIsLoading(false)
-            console.log(tweet, "asd")
         }
         fetchTweetAnswers()
     }, [params.tweetId, isLiking, isRetweeting, isCommenting])
@@ -40,7 +39,6 @@ export function TweetComponent({ params }) {
 
         const ogTweetUser = await fetchUserById(ogTweet[1].userId);
         const tweetAnswer = await generateTweet(`From input message: ${ogTweet[1].content} by user: ${ogTweetUser.username} In less than 280 characters, write a Twitter a short response to ${ogTweetUser.username}.`, avatar);
-        console.log(tweetAnswer)
         await addTweetAnswer(ogTweet, tweetAnswer, user[0]);
         setIsCommenting(false)
     }
@@ -109,11 +107,11 @@ export function TweetComponent({ params }) {
                         <div className="flex items-start flex-col">
                             <div >
                                 <div className="flex items-start space-x-2 p-2 m-2">
-                                    <img
+                                    <Image
                                         alt="Avatar"
                                         className="rounded-full"
                                         height="64"
-                                        src={'../' + data[0]?.avatar}
+                                        src={data[0]?.avatar}
                                         style={{
                                             aspectRatio: "64/64",
                                             objectFit: "cover",
@@ -130,11 +128,11 @@ export function TweetComponent({ params }) {
                                         </p>
                                         {data[0]?.ogContent != null &&
                                             <div className="flex border rounded-md border-gray-800 items-start space-x-1 p-1 m-1">
-                                                <img
+                                                <Image
                                                     alt="Avatar"
                                                     className="rounded-full"
                                                     height="32"
-                                                    src={'../' + data[0]?.ogUser?.avatar}
+                                                    src={data[0]?.ogUser?.avatar}
                                                     style={{
                                                         aspectRatio: "32/32",
                                                         objectFit: "cover",
@@ -176,11 +174,11 @@ export function TweetComponent({ params }) {
                                     <div>
                                         <div>
                                             <div className="flex items-start space-x-2 p-2 m-2">
-                                                <img
+                                                <Image
                                                     alt="Avatar"
                                                     className="rounded-full"
                                                     height="42"
-                                                    src={'../' + key?.answerUser?.avatar}
+                                                    src={key?.answerUser?.avatar}
                                                     style={{
                                                         aspectRatio: "42/42",
                                                         objectFit: "cover",

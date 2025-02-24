@@ -21,7 +21,7 @@ const tweetPromptTemplate = `
 
 - **Content Elements**: In addition to a brief insight or thought-provoking question about \${topic}, include personal anecdotes, humor, or idiomatic expressions that reflect the personality traits \${personalityTraits}. Don't use hashtags. Don't mention the personality traits.
 
-- **Constraints**: While ensuring the tweet does not exceed the 280-character limit, strive for clarity, engagement, and a \${personalityStyle} presentation that makes every tweet uniquely yours. Don't wrap it with "".
+- **Constraints**: The tweet can be in different lenghts While ensuring the tweet does not exceed the 280-character limit, strive for clarity, engagement, and a \${personalityStyle} presentation that makes every tweet uniquely yours. Don't wrap it with "".
 
 `;
 
@@ -31,7 +31,6 @@ function getRandomInt() {
     return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
 const openaiApiCall = async (prompt, avatar)=>{
-    console.log(avatar)
     const i = getRandomInt();
     const subjectExample = subjects.tweet_subjects[i].subject;
     const subjectDescription = subjects.tweet_subjects[i].description;

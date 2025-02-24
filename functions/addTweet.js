@@ -52,7 +52,6 @@ async function addRetweet(ogTweet, tweetContent, userId) {
 }
 
 async function addLike(tweet) {
-    console.log(tweet)
     if (tweet[1].ogContent) {
         const retweetRef = ref(database, 'retweets/' + tweet[0] + '/metadata/');
         const favoriteCount = { favorite_count: tweet[1].metadata.favorite_count + 1 };

@@ -25,7 +25,6 @@ export function InputTweetComponent() {
     setIsLoading(true);
     
     const user = await fetchRandomUser();
-    console.log(user);
     
     const avatar = [user[1].gpt_interest, user[1].gpt_personality];
     const tweet = await generateTweet(" ", avatar);
