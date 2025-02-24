@@ -30,7 +30,7 @@ function getRandomInt() {
     let max = Math.floor(19);
     return Math.floor(Math.random() * (max - min + 1)) + min; 
 }
-    
+
 const openaiApiCall = async (prompt, avatar)=>{
     const i = getRandomInt();
     const subjectExample = subjects.tweet_subjects[i].subject;
@@ -59,7 +59,6 @@ const openaiApiCall = async (prompt, avatar)=>{
         .replace(/\${subjectDescription}/g, subjectDescription);
 
     try {
-        console.log(systemPrompt)
         const res = await client.post(chatgptUrl, {
             model: "gpt-4",
             messages: [

@@ -6,7 +6,6 @@ const fetchUserById = async (userId) => {
     const userRef = ref(database,'users/' + userId);
     onValue(userRef, (snapshot) => {
       const user = snapshot.val();
-      console.log(user);
       resolve(user);
     }, (error) => reject(error));
   });

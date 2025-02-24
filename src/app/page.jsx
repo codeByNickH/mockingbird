@@ -1,3 +1,4 @@
+import Image from "next/image";
 
 
 export default function Home() {
@@ -6,10 +7,12 @@ export default function Home() {
       <h1 className="text-xl">Welcome to</h1>
       {/* <h4>The Fake Twitter With AI User</h4> */}
       <div className="p-10">
-        <img
+        <Image
           src="/logomockingbird.webp"
           alt="welcomelogo"
           className="rounded"
+          width={1000}
+          height={1000}
         />
       </div>
     </main>

@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton"
 import { useEffect, useState } from "react";
 import { Separator } from "../ui/separator";
-import { ref, onValue, query, orderByChild } from "firebase/database";
-import { database } from '@/lib/firebase';
 import { InputTweetComponent } from "./input-tweet-component";
 import { addLike, addTweet, addRetweet, addTweetAnswer } from '@/backend/addTweet'
 import { fetchRandomTweet, fetchRetweetById, fetchTweetById, fetchTweetsAndUserData } from '@/backend/fetchTweets'
@@ -13,7 +11,7 @@ import { fetchRandomUser, fetchUserById } from "@/backend/fetchUser";
 import { generateTweet } from "@/backend/generateTweet";
 import Link from "next/link";
 import { CardContent, Card, CardFooter } from "@/components/ui/card"
-
+import Image from "next/image";
 
 
 export function FeedComponent() {
@@ -29,7 +27,6 @@ export function FeedComponent() {
       const tweets = await fetchTweetsAndUserData();
       setFeedData(tweets)
       setIsLoading(false)
-      console.log(tweets)
     }
     GetTweets()
   }, [isLiking, isRetweeting, isCommenting, isTweeting]);
@@ -38,11 +35,11 @@ export function FeedComponent() {
     setIsTweeting(true)
     
     const user = await fetchRandomUser();
-    console.log(user);
-    
     const avatar = [user[1].gpt_interest, user[1].gpt_personality];
+    
     const tweet = await generateTweet(" ", avatar);
     await addTweet(user[0], tweet);
+    
     setIsTweeting(false);
   }
 
@@ -58,7 +55,6 @@ export function FeedComponent() {
 
     const ogTweetUser = await fetchUserById(ogTweet[1].userId);
     const tweetAnswer = await generateTweet(`From input message: ${ogTweet[1].content} by user: ${ogTweetUser.username} In less than 280 characters, write a Twitter a short response to ${ogTweetUser.username}.`, avatar);
-    console.log(tweetAnswer)
     await addTweetAnswer(ogTweet, tweetAnswer, user[0]);
     setIsCommenting(!true)
   }
@@ -164,7 +160,7 @@ export function FeedComponent() {
               {feedData?.map((key, id) =>
                 <div key={id}>
                     <div className="flex items-start space-x-2 p-2 m-2">
-                      <img
+                      <Image
                         alt="Avatar"
                         className="rounded-full"
                         height="64"
@@ -196,7 +192,7 @@ export function FeedComponent() {
                         }
                         {key?.ogContent != null &&
                           <div className="flex border rounded-md border-gray-800 items-start space-x-1 p-1 m-1">
-                            <img
+                            <Image
                               alt="Avatar"
                               className="rounded-full"
                               height="32"
